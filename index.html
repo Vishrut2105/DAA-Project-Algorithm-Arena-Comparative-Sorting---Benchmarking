@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DAA Project - Algorithm Visualizer and Analysis</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="navbar">
+    <div class="nav-title">
+      <h2>DAA Project: Algorithm Visualizer & Performance Analysis</h2>
+      <span>B.Tech Semester 5 | Design and Analysis of Algorithms</span>
+    </div>
+    <div class="nav-links">
+      <button class="tab-btn active" onclick="showTab('tab-sorting')">Sorting Visualizer</button>
+      <button class="tab-btn" onclick="showTab('tab-race')">Algorithm Race</button>
+      <button class="tab-btn" onclick="showTab('tab-comparison')">Algorithm Comparison</button>
+      <button class="tab-btn" onclick="showTab('tab-graph')">Shortest Path (Dijkstra)</button>
+      <button class="tab-btn" onclick="showTab('tab-theory')">Complexity Table</button>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- TAB 1: SORTING VISUALIZER -->
+    <div id="tab-sorting" class="tab-content active">
+      <div class="panel controls">
+        <div class="control-item">
+          <label for="algo-select">Algorithm:</label>
+          <select id="algo-select">
+            <option value="bubble">Bubble Sort</option>
+            <option value="selection">Selection Sort</option>
+            <option value="insertion">Insertion Sort</option>
+            <option value="merge">Merge Sort</option>
+            <option value="quick" selected>Quick Sort</option>
+            <option value="heap">Heap Sort</option>
+          </select>
+        </div>
+
+        <div class="control-item">
+          <label for="size-slider">Array Size: <span id="size-val">30</span></label>
+          <input type="range" id="size-slider" min="10" max="60" value="30">
+        </div>
+
+        <div class="control-item">
+          <label for="speed-slider">Speed: <span id="speed-val">Normal</span></label>
+          <input type="range" id="speed-slider" min="1" max="100" value="50">
+        </div>
+
+        <div class="control-item buttons">
+          <button id="btn-generate" class="btn btn-secondary">Generate Array</button>
+          <button id="btn-start" class="btn btn-primary">Start Sorting</button>
+          <button id="btn-stop" class="btn btn-danger" disabled>Reset</button>
+        </div>
+      </div>
+
+      <!-- Live Counters -->
+      <div class="panel stats-panel">
+        <div class="stat-box">Comparisons: <span id="stat-comp">0</span></div>
+        <div class="stat-box">Swaps: <span id="stat-swaps">0</span></div>
+        <div class="stat-box">Time Elapsed: <span id="stat-time">0 ms</span></div>
+        <div class="stat-box info" id="algo-info">Selected: Quick Sort | Time: O(n log n) | Space: O(log n)</div>
+      </div>
+
+      <!-- Bars Container -->
+      <div class="panel visualizer-box">
+        <div class="legend">
+          <span class="legend-color default"></span> Normal
+          <span class="legend-color comparing"></span> Comparing
+          <span class="legend-color swapping"></span> Swapping
+          <span class="legend-color sorted"></span> Sorted
+        </div>
+        <div id="bars-container" class="bars-container"></div>
+      </div>
+    </div>
+
+    <!-- TAB 2: ALGORITHM RACE -->
+    <div id="tab-race" class="tab-content">
+      <div class="panel controls">
+        <div class="control-item">
+          <label for="race-size">Race Array Size: <span id="race-size-val">35</span> elements</label>
+          <input type="range" id="race-size" min="15" max="50" value="35">
+        </div>
+        <div class="control-item buttons">
+          <button id="btn-race-generate" class="btn btn-secondary">New Race Array</button>
+          <button id="btn-race-start" class="btn btn-primary">Start Race</button>
+          <button id="btn-race-reset" class="btn btn-danger" disabled>Reset</button>
+        </div>
+      </div>
+
+      <!-- 4 Race Lanes -->
+      <div class="race-lanes-grid">
+        <!-- Lane 1: Quick Sort -->
+        <div class="panel lane-card" id="lane-quick">
+          <div class="lane-header">
+            <h4>Quick Sort (Divide & Conquer)</h4>
+            <span class="lane-status" id="status-quick">Ready</span>
+          </div>
+          <div class="lane-bars" id="race-bars-quick"></div>
+          <div class="lane-stats">
+            <span>Comparisons: <b id="comp-quick">0</b></span>
+            <span>Swaps: <b id="swaps-quick">0</b></span>
+            <span>Time: <b id="time-quick">0 ms</b></span>
+          </div>
+        </div>
+
+        <!-- Lane 2: Merge Sort -->
+        <div class="panel lane-card" id="lane-merge">
+          <div class="lane-header">
+            <h4>Merge Sort (Divide & Conquer)</h4>
+            <span class="lane-status" id="status-merge">Ready</span>
+          </div>
+          <div class="lane-bars" id="race-bars-merge"></div>
+          <div class="lane-stats">
+            <span>Comparisons: <b id="comp-merge">0</b></span>
+            <span>Swaps: <b id="swaps-merge">0</b></span>
+            <span>Time: <b id="time-merge">0 ms</b></span>
+          </div>
+        </div>
+
+        <!-- Lane 3: Heap Sort -->
+        <div class="panel lane-card" id="lane-heap">
+          <div class="lane-header">
+            <h4>Heap Sort (Binary Heap)</h4>
+            <span class="lane-status" id="status-heap">Ready</span>
+          </div>
+          <div class="lane-bars" id="race-bars-heap"></div>
+          <div class="lane-stats">
+            <span>Comparisons: <b id="comp-heap">0</b></span>
+            <span>Swaps: <b id="swaps-heap">0</b></span>
+            <span>Time: <b id="time-heap">0 ms</b></span>
+          </div>
+        </div>
+
+        <!-- Lane 4: Bubble Sort -->
+        <div class="panel lane-card" id="lane-bubble">
+          <div class="lane-header">
+            <h4>Bubble Sort (Brute Force)</h4>
+            <span class="lane-status" id="status-bubble">Ready</span>
+          </div>
+          <div class="lane-bars" id="race-bars-bubble"></div>
+          <div class="lane-stats">
+            <span>Comparisons: <b id="comp-bubble">0</b></span>
+            <span>Swaps: <b id="swaps-bubble">0</b></span>
+            <span>Time: <b id="time-bubble">0 ms</b></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Race Standings Table -->
+      <div class="panel" id="race-results-panel" style="display: none;">
+        <h3>Race Finish Standings</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Algorithm</th>
+              <th>Time Taken</th>
+              <th>Comparisons</th>
+              <th>Swaps / Writes</th>
+            </tr>
+          </thead>
+          <tbody id="race-results-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 3: ALGORITHM COMPARISON -->
+    <div id="tab-comparison" class="tab-content">
+      <div class="panel controls">
+        <div class="control-item">
+          <label for="comp-size">Test Array Size: <span id="comp-size-val">40</span> elements</label>
+          <input type="range" id="comp-size" min="15" max="80" value="40">
+        </div>
+        <div class="control-item buttons">
+          <button id="btn-run-comparison" class="btn btn-primary">Run Comparison Test</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Benchmark Results</h3>
+        <p class="description-text">Each algorithm is tested on the exact same randomized input array to compare performance metrics.</p>
+
+        <table class="table" id="comparison-table">
+          <thead>
+            <tr>
+              <th>Algorithm</th>
+              <th>Paradigm</th>
+              <th>Comparisons</th>
+              <th>Swaps / Writes</th>
+              <th>Execution Time</th>
+              <th>Theoretical Time Complexity</th>
+            </tr>
+          </thead>
+          <tbody id="comparison-tbody">
+            <tr>
+              <td colspan="6" style="text-align: center; color: #666;">Click "Run Comparison Test" to execute all algorithms.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 3: SHORTEST PATH (DIJKSTRA) -->
+    <div id="tab-graph" class="tab-content">
+      <div class="panel controls">
+        <div class="control-item buttons">
+          <button id="btn-run-dijkstra" class="btn btn-primary">Find Shortest Path</button>
+          <button id="btn-clear-path" class="btn btn-secondary">Clear Path</button>
+          <button id="btn-clear-walls" class="btn btn-danger">Clear All Walls</button>
+        </div>
+        <div class="instruction-text">
+          Instructions: Click on grid cells to create or remove walls. Click "Find Shortest Path" to run Dijkstra's Algorithm.
+        </div>
+      </div>
+
+      <div class="panel stats-panel">
+        <div class="stat-box">Nodes Visited: <span id="graph-visited">0</span></div>
+        <div class="stat-box">Shortest Path Length: <span id="graph-length">0</span></div>
+      </div>
+
+      <div class="panel visualizer-box">
+        <div class="legend">
+          <span class="legend-color start"></span> Start Node
+          <span class="legend-color target"></span> Target Node
+          <span class="legend-color wall"></span> Wall (Obstacle)
+          <span class="legend-color visited"></span> Visited Node
+          <span class="legend-color path"></span> Shortest Path
+        </div>
+        <div id="grid-container" class="grid-container"></div>
+      </div>
+    </div>
+
+    <!-- TAB 4: COMPLEXITY TABLE -->
+    <div id="tab-theory" class="tab-content">
+      <div class="panel">
+        <h3>Algorithm Complexity Reference Table (DAA Syllabus)</h3>
+        <p class="description-text">Summary of time and space complexity analysis for algorithms included in the syllabus.</p>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Algorithm</th>
+              <th>Design Paradigm</th>
+              <th>Best Case</th>
+              <th>Average Case</th>
+              <th>Worst Case</th>
+              <th>Space Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Bubble Sort</td>
+              <td>Brute Force / Iterative</td>
+              <td>Ω(n)</td>
+              <td>Θ(n²)</td>
+              <td>O(n²)</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td>Selection Sort</td>
+              <td>Iterative</td>
+              <td>Ω(n²)</td>
+              <td>Θ(n²)</td>
+              <td>O(n²)</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td>Insertion Sort</td>
+              <td>Incremental</td>
+              <td>Ω(n)</td>
+              <td>Θ(n²)</td>
+              <td>O(n²)</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td>Merge Sort</td>
+              <td>Divide and Conquer</td>
+              <td>Ω(n log n)</td>
+              <td>Θ(n log n)</td>
+              <td>O(n log n)</td>
+              <td>O(n)</td>
+            </tr>
+            <tr>
+              <td>Quick Sort</td>
+              <td>Divide and Conquer</td>
+              <td>Ω(n log n)</td>
+              <td>Θ(n log n)</td>
+              <td>O(n²)</td>
+              <td>O(log n)</td>
+            </tr>
+            <tr>
+              <td>Heap Sort</td>
+              <td>Binary Heap / Comparison</td>
+              <td>Ω(n log n)</td>
+              <td>Θ(n log n)</td>
+              <td>O(n log n)</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td>Dijkstra's Algorithm</td>
+              <td>Greedy Paradigm</td>
+              <td>O((V + E) log V)</td>
+              <td>O((V + E) log V)</td>
+              <td>O((V + E) log V)</td>
+              <td>O(V)</td>
+            </tr>
+            <tr>
+              <td>Binary Search</td>
+              <td>Divide and Conquer</td>
+              <td>Ω(1)</td>
+              <td>Θ(log n)</td>
+              <td>O(log n)</td>
+              <td>O(1)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="footer">
+    <p>Information Technology Department | Academic Project: Design and Analysis of Algorithms</p>
+  </footer>
+
+  <script src="js/sorting.js"></script>
+  <script src="js/race.js"></script>
+  <script src="js/comparison.js"></script>
+  <script src="js/dijkstra.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
